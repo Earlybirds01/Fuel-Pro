@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>FuelPro — ඉන්ධන සහායකයා</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@500;600&family=Noto+Sans+Sinhala:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   THEME TOKENS
+═══════════════════════════════════════ */
+:root {
+  --transition-theme: background .5s ease, color .4s ease, border-color .4s ease, box-shadow .4s ease;
+}
+
+/* LIGHT */
+body.light {
+  --bg:         #f4f6fb;
+  --bg2:        #eaecf4;
+  --surface:    #ffffff;
+  --surface2:   #f7f8fc;
+  --border:     #e2e6f0;
+  --border2:    #d0d5e8;
+  --text:       #0d1117;
+  --text2:      #4a5568;
+  --text3:      #8892a4;
+  --accent:     #2563eb;
+  --accent-soft:#eff4ff;
+  --accent-glow:rgba(37,99,235,.12);
+  --green:      #16a34a;
+  --green-soft: #f0fdf4;
+  --green-glow: rgba(22,163,74,.12);
+  --orange:     #d97706;
+  --orange-soft:#fffbeb;
+  --red:        #dc2626;
+  --red-soft:   #fef2f2;
+  --shadow:     0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.06);
+  --shadow-lg:  0 4px 6px rgba(0,0,0,.05), 0 10px 40px rgba(0,0,0,.1);
+  --pill-bg:    rgba(37,99,235,.07);
+}
+
+/* DARK */
+body.dark {
+  --bg:         #090d18;
+  --bg2:        #111827;
+  --surface:    #141c2e;
+  --surface2:   #1a2440;
+  --border:     rgba(255,255,255,.08);
+  --border2:    rgba(255,255,255,.13);
+  --text:       #e8edf8;
+  --text2:      #8892b0;
+  --text3:      #4a5568;
+  --accent:     #4f8ef7;
+  --accent-soft:rgba(79,142,247,.1);
+  --accent-glow:rgba(79,142,247,.18);
+  --green:      #22c55e;
+  --green-soft: rgba(34,197,94,.1);
+  --green-glow: rgba(34,197,94,.15);
+  --orange:     #f59e0b;
+  --orange-soft:rgba(245,158,11,.1);
+  --red:        #ef4444;
+  --red-soft:   rgba(239,68,68,.1);
+  --shadow:     0 2px 8px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.3);
+  --shadow-lg:  0 8px 16px rgba(0,0,0,.5), 0 20px 60px rgba(0,0,0,.4);
+  --pill-bg:    rgba(79,142,247,.1);
+}
+
+/* ═══════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════ */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0 }
+html { scroll-behavior:smooth }
+body {
+  font-family:'DM Sans','Noto Sans Sinhala',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  padding:0 0 80px;
+  transition:var(--transition-theme);
+}
+body::before {
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  transition:opacity .5s;
+}
+body.light::before {
+  background:radial-gradient(ellipse 80% 40% at 50% -10%,rgba(37,99,235,.06),transparent 60%);
+}
+body.dark::before {
+  background:
+    radial-gradient(ellipse 70% 50% at 15% -5%,rgba(79,142,247,.08),transparent 60%),
+    radial-gradient(ellipse 60% 50% at 85% 100%,rgba(99,102,241,.07),transparent 60%);
+}
+
+.wrap { max-width:420px; margin:0 auto; padding:0 16px; position:relative; z-index:1 }
+
+/* ═══════════════════════════════════════
+   TOP BAR
+═══════════════════════════════════════ */
+.topbar {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:20px 0 24px;
+}
+.brand-wrap { display:flex; flex-direction:column; gap:2px }
+.brand {
+  font-family:'DM Mono',monospace;
+  font-size:20px; font-weight:600; letter-spacing:-.5px;
+  color:#e07b12;
+}
+.brand span { color:var(--accent) }
+.brand-sub { font-size:11px; color:var(--text3); font-weight:500; letter-spacing:.3px }
+
+.theme-badge {
+  display:flex; align-items:center; gap:7px;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:999px; padding:8px 14px;
+  font-size:12px; font-weight:600; color:var(--text2);
+  box-shadow:var(--shadow); transition:var(--transition-theme);
+}
+.theme-ico { font-size:16px; line-height:1 }
+
+/* ═══════════════════════════════════════
+   CARD
+═══════════════════════════════════════ */
+.card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:12px;
+  box-shadow:var(--shadow);
+  transition:var(--transition-theme);
+}
+.card-header {
+  display:flex; align-items:center; gap:10px;
+  margin-bottom:18px;
+}
+.card-icon {
+  width:34px; height:34px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:17px; flex-shrink:0;
+  background:var(--accent-soft); transition:var(--transition-theme);
+}
+.card-title {
+  font-size:13px; font-weight:700; color:var(--text);
+  letter-spacing:-.1px;
+}
+.card-sub { font-size:11px; color:var(--text3); margin-top:1px }
+
+/* ═══════════════════════════════════════
+   VEHICLE INPUT
+═══════════════════════════════════════ */
+/* Input mode tabs */
+.mode-tabs {
+  display:flex; gap:6px; margin-bottom:16px;
+  background:var(--surface2); border-radius:12px; padding:4px;
+  border:1px solid var(--border); transition:var(--transition-theme);
+}
+.mode-tab {
+  flex:1; padding:9px 8px; border-radius:9px; cursor:pointer;
+  font-size:12px; font-weight:600; text-align:center;
+  color:var(--text3); transition:.2s; border:none; background:transparent;
+  font-family:'DM Sans','Noto Sans Sinhala',sans-serif;
+}
+.mode-tab.active {
+  background:var(--surface); color:var(--accent);
+  box-shadow:var(--shadow); font-weight:700;
+}
+
+/* Number input */
+.num-input-wrap {
+  position:relative; margin-bottom:14px;
+}
+.num-prefix {
+  position:absolute; left:14px; top:50%; transform:translateY(-50%);
+  font-family:'DM Mono',monospace; font-size:15px; font-weight:600;
+  color:var(--text3); pointer-events:none; user-select:none;
+}
+.num-input {
+  width:100%; padding:15px 14px 15px 80px;
+  border-radius:14px; border:1.5px solid var(--border2);
+  background:var(--surface2); color:var(--text);
+  font-family:'DM Mono',monospace; font-size:22px; font-weight:600;
+  letter-spacing:3px; outline:none;
+  transition:border-color .25s, box-shadow .25s, var(--transition-theme);
+}
+.num-input::placeholder { color:var(--text3); letter-spacing:4px }
+.num-input:focus {
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-glow);
+}
+input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none }
+
+.go-btn {
+  width:100%; padding:15px; border-radius:14px; border:none; cursor:pointer;
+  background:var(--accent); color:#fff;
+  font-family:'DM Sans','Noto Sans Sinhala',sans-serif;
+  font-size:15px; font-weight:700; letter-spacing:.2px;
+  box-shadow:0 4px 16px var(--accent-glow);
+  transition:opacity .2s, transform .15s, box-shadow .2s;
+  position:relative; overflow:hidden;
+}
+.go-btn::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.1),transparent);
+}
+.go-btn:hover { opacity:.92; box-shadow:0 6px 24px var(--accent-glow) }
+.go-btn:active { transform:scale(.98) }
+
+/* ═══════════════════════════════════════
+   PLATE DISPLAY
+═══════════════════════════════════════ */
+.plate-display {
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:16px; padding:16px 18px;
+  display:flex; align-items:center; gap:14px;
+  margin-bottom:16px; transition:var(--transition-theme);
+}
+.plate-fuel-ico {
+  font-size:30px; flex-shrink:0;
+  filter:drop-shadow(0 2px 6px rgba(0,0,0,.15));
+}
+.plate-info {}
+.plate-tag {
+  font-size:9px; font-weight:700; letter-spacing:1.5px;
+  text-transform:uppercase; color:var(--text3); margin-bottom:4px;
+}
+.plate-number {
+  font-family:'DM Mono',monospace;
+  font-size:24px; font-weight:600; color:var(--accent);
+  letter-spacing:2px; line-height:1;
+}
+.plate-parity {
+  font-size:12px; font-weight:600; color:var(--text3);
+  margin-top:4px; display:flex; align-items:center; gap:5px;
+}
+.parity-dot {
+  width:7px; height:7px; border-radius:50%; flex-shrink:0;
+}
+
+/* ═══════════════════════════════════════
+   DAY RESULT BANNER
+═══════════════════════════════════════ */
+.day-banner {
+  border-radius:16px; padding:16px 18px;
+  display:flex; align-items:center; gap:12px;
+  margin-bottom:0; transition:var(--transition-theme);
+}
+.day-banner.can {
+  background:var(--green-soft); border:1.5px solid var(--green);
+}
+.day-banner.no {
+  background:var(--red-soft); border:1.5px solid var(--red);
+}
+.banner-ico { font-size:26px; flex-shrink:0; line-height:1 }
+.banner-text {}
+.banner-title {
+  font-size:15px; font-weight:800;
+  font-family:'Noto Sans Sinhala',sans-serif; line-height:1.3;
+}
+.day-banner.can .banner-title { color:var(--green) }
+.day-banner.no  .banner-title { color:var(--red) }
+.banner-sub {
+  font-size:12px; font-weight:500; margin-top:3px;
+  font-family:'Noto Sans Sinhala',sans-serif;
+  color:var(--text2);
+}
+
+/* ═══════════════════════════════════════
+   CALENDAR
+═══════════════════════════════════════ */
+.cal-month {
+  font-size:14px; font-weight:700; color:var(--text);
+  margin-bottom:12px; letter-spacing:-.2px;
+}
+.cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:4px }
+.cal-hd {
+  font-family:'DM Mono',monospace;
+  font-size:9px; font-weight:500; text-align:center;
+  color:var(--text3); padding:4px 0; letter-spacing:.5px;
+}
+.cal-d {
+  aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+  border-radius:8px; font-size:12px; font-weight:500;
+  color:var(--text3); transition:.15s;
+}
+.cal-d.ok {
+  background:var(--green-soft); color:var(--green); font-weight:700;
+  border:1px solid rgba(22,163,74,.25);
+}
+body.dark .cal-d.ok { border-color:rgba(34,197,94,.2) }
+.cal-d.today {
+  outline:2px solid var(--accent); outline-offset:1px;
+  color:var(--text); font-weight:700;
+}
+.cal-d.ok.today {
+  background:var(--green); color:#fff;
+  outline-color:var(--green); box-shadow:0 0 12px var(--green-glow);
+}
+.cal-legend {
+  display:flex; gap:16px; margin-top:10px;
+  font-size:11px; color:var(--text3); justify-content:center;
+}
+.cal-legend span { display:flex; align-items:center; gap:5px }
+.leg-ok { width:9px; height:9px; border-radius:3px; background:var(--green) }
+.leg-td { width:9px; height:9px; border-radius:3px; outline:2px solid var(--accent); outline-offset:1px }
+
+/* ═══════════════════════════════════════
+   VEHICLE TYPE
+═══════════════════════════════════════ */
+.vtype-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:9px }
+.vtype-btn {
+  background:var(--surface2); border:1.5px solid var(--border);
+  border-radius:16px; padding:14px 12px; cursor:pointer;
+  transition:.2s; display:flex; flex-direction:column;
+  align-items:center; gap:8px; text-align:center;
+}
+.vtype-btn:hover { border-color:var(--accent); background:var(--accent-soft) }
+.vtype-btn.active {
+  background:var(--accent-soft); border-color:var(--accent);
+  box-shadow:0 0 0 1px var(--accent), 0 4px 12px var(--accent-glow);
+}
+.vt-ico { font-size:26px; line-height:1 }
+.vt-name {
+  font-size:12px; font-weight:700; color:var(--text);
+  font-family:'Noto Sans Sinhala',sans-serif;
+}
+.vt-quota {
+  font-family:'DM Mono',monospace;
+  font-size:11px; font-weight:600; color:var(--green);
+  background:var(--green-soft); border-radius:999px;
+  padding:3px 10px; border:1px solid rgba(22,163,74,.2);
+}
+body.dark .vt-quota { border-color:rgba(34,197,94,.15) }
+
+/* ═══════════════════════════════════════
+   QUOTA SECTION
+═══════════════════════════════════════ */
+.quota-hero {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:18px; padding:18px; margin-bottom:12px;
+  transition:var(--transition-theme);
+}
+.qh-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px }
+.qh-left {}
+.qh-lbl {
+  font-size:10px; font-weight:700; letter-spacing:1.2px;
+  text-transform:uppercase; color:var(--text3); margin-bottom:6px;
+}
+.qh-val {
+  font-family:'DM Mono',monospace;
+  font-size:38px; font-weight:600; line-height:1; color:var(--accent);
+}
+.qh-unit { font-size:16px; color:var(--text3); margin-left:2px }
+.qh-right {
+  text-align:right;
+}
+.qh-right .qh-lbl { text-align:right }
+.qh-bal {
+  font-family:'DM Mono',monospace;
+  font-size:28px; font-weight:600; line-height:1;
+}
+.qh-bal.green  { color:var(--green) }
+.qh-bal.orange { color:var(--orange) }
+.qh-bal.red    { color:var(--red) }
+
+/* Progress */
+.prog-track {
+  height:10px; background:var(--border);
+  border-radius:99px; overflow:hidden; margin:4px 0 8px;
+  transition:var(--transition-theme);
+}
+.prog-fill {
+  height:100%; border-radius:99px; width:100%;
+  transition:width .9s cubic-bezier(.16,.84,.44,1);
+}
+.prog-fill.green  { background:linear-gradient(90deg,#16a34a,#22c55e) }
+.prog-fill.orange { background:linear-gradient(90deg,#d97706,#f59e0b) }
+.prog-fill.red    { background:linear-gradient(90deg,#dc2626,#ef4444) }
+.prog-labels {
+  display:flex; justify-content:space-between;
+  font-family:'DM Mono',monospace; font-size:10px; color:var(--text3);
+}
+.qh-pct {
+  font-family:'DM Mono',monospace;
+  font-size:11px; font-weight:600; color:var(--text3); margin-top:4px;
+}
+
+/* ═══════════════════════════════════════
+   FUEL INPUT SECTION
+═══════════════════════════════════════ */
+.fuel-tabs {
+  display:flex; gap:8px; margin-bottom:14px;
+  overflow-x:auto; padding-bottom:2px;
+}
+.fuel-tabs::-webkit-scrollbar { display:none }
+.fuel-tab {
+  flex-shrink:0; padding:10px 14px; border-radius:14px; cursor:pointer;
+  font-size:12px; font-weight:600; line-height:1.4;
+  background:var(--surface2); border:1.5px solid var(--border);
+  color:var(--text2); transition:.2s; white-space:nowrap;
+  font-family:'DM Sans','Noto Sans Sinhala',sans-serif; text-align:center; min-width:90px;
+}
+.fuel-tab.active {
+  background:var(--accent-soft); border-color:var(--accent); color:var(--accent);
+  font-weight:700;
+}
+.ftab-dot {
+  display:inline-block; width:7px; height:7px; border-radius:50%;
+  margin-right:5px; vertical-align:middle; margin-bottom:1px;
+}
+.ftab-dot.petrol { background:#f59e0b }
+.ftab-dot.diesel { background:#3b82f6 }
+.fuel-tab.active .ftab-dot.petrol { background:#f59e0b }
+.fuel-tab.active .ftab-dot.diesel { background:var(--accent) }
+.ftab-price {
+  font-family:'DM Mono',monospace; font-size:11px;
+  font-weight:500; color:var(--text3); display:block; margin-top:2px;
+}
+.fuel-tab.active .ftab-price { color:var(--accent); opacity:.8 }
+
+/* Dual input */
+.dual-input-label {
+  font-size:10px; font-weight:700; letter-spacing:1px;
+  text-transform:uppercase; color:var(--text3); margin-bottom:10px;
+  display:flex; align-items:center; gap:6px;
+}
+.input-row {
+  display:grid; grid-template-columns:1fr auto 1fr; gap:8px;
+  align-items:center; margin-bottom:12px;
+}
+.inp-box {
+  background:var(--surface2); border:1.5px solid var(--border);
+  border-radius:14px; padding:12px 14px;
+  display:flex; flex-direction:column; gap:3px;
+  transition:border-color .2s, box-shadow .2s, var(--transition-theme);
+  cursor:text;
+}
+.inp-box:focus-within {
+  border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow);
+}
+.inp-box-lbl {
+  font-size:9px; font-weight:700; letter-spacing:1px;
+  text-transform:uppercase; color:var(--text3);
+}
+.inp-box-inner { display:flex; align-items:baseline; gap:4px }
+.inp-box input {
+  background:transparent; border:none; outline:none;
+  font-family:'DM Mono',monospace; font-size:20px; font-weight:600;
+  color:var(--text); width:100%; min-width:0;
+}
+.inp-box input::placeholder { color:var(--text3) }
+.inp-box-unit {
+  font-family:'DM Mono',monospace; font-size:12px;
+  font-weight:600; color:var(--text3); flex-shrink:0;
+}
+.arrow-sep {
+  text-align:center; color:var(--text3); font-size:18px; flex-shrink:0;
+}
+
+/* Result card */
+.result-card {
+  background:var(--accent-soft); border:1.5px solid var(--accent);
+  border-radius:16px; padding:16px 18px;
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:12px; transition:var(--transition-theme);
+}
+.rc-left {}
+.rc-lbl {
+  font-size:10px; font-weight:700; letter-spacing:1px;
+  text-transform:uppercase; color:var(--accent); opacity:.7; margin-bottom:4px;
+}
+.rc-val {
+  font-family:'DM Mono',monospace;
+  font-size:28px; font-weight:600; color:var(--accent);
+}
+.rc-break {
+  font-size:11px; color:var(--accent); opacity:.6; margin-top:3px;
+}
+.rc-right {
+  font-size:36px; opacity:.5;
+}
+
+/* Reset row */
+.reset-row {
+  background:var(--orange-soft); border:1px solid var(--orange);
+  border-radius:14px; padding:13px 15px;
+  display:flex; align-items:center; gap:11px;
+  margin-bottom:12px; transition:var(--transition-theme);
+}
+.reset-ico { font-size:20px; flex-shrink:0 }
+.reset-body {}
+.reset-lbl {
+  font-size:9px; font-weight:700; letter-spacing:1px;
+  text-transform:uppercase; color:var(--orange); opacity:.8; margin-bottom:3px;
+}
+.reset-val {
+  font-size:13px; font-weight:700; color:var(--orange);
+  font-family:'Noto Sans Sinhala',sans-serif;
+}
+.reset-cd { font-size:11px; color:var(--text2); margin-top:2px; font-weight:500 }
+
+.reset-inp-wrap { margin-bottom:12px }
+.r-lbl {
+  font-size:10px; font-weight:700; letter-spacing:.8px;
+  text-transform:uppercase; color:var(--text3); display:block; margin-bottom:6px;
+}
+.r-inp {
+  width:100%; padding:12px 14px; border-radius:13px;
+  border:1.5px solid var(--border2); background:var(--surface2);
+  color:var(--text); font-size:14px; font-weight:600; outline:none;
+  font-family:'DM Sans','Noto Sans Sinhala',sans-serif; transition:border-color .2s, var(--transition-theme);
+  color-scheme:light dark;
+}
+.r-inp:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow) }
+
+/* Warning */
+.warn-text {
+  font-size:11.5px; color:var(--red); font-weight:600;
+  padding:8px 12px; border-radius:10px; background:var(--red-soft);
+  border:1px solid var(--red); margin-top:8px; display:none;
+  font-family:'Noto Sans Sinhala',sans-serif;
+}
+
+/* Reset link */
+.reset-link {
+  display:flex; align-items:center; justify-content:center; gap:5px;
+  padding:11px; border-radius:12px; cursor:pointer;
+  font-size:12px; font-weight:700; color:var(--text3);
+  border:1px solid var(--border); transition:.2s;
+  margin-top:4px; background:transparent;
+  font-family:'Noto Sans Sinhala',sans-serif; width:100%; border:none;
+}
+.reset-link:hover { color:var(--accent) }
+
+/* ═══════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════ */
+.hidden { display:none !important }
+.reveal { animation:slideUp .45s cubic-bezier(.16,.84,.44,1) both }
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(18px) }
+  to   { opacity:1; transform:translateY(0) }
+}
+
+</style>
+</head>
+<body class="light">
+<div class="wrap">
+
+<!-- ── TOP BAR ── -->
+<div class="topbar">
+  <div class="brand-wrap">
+    <div class="brand">⛽ Fuel<span>Pro</span></div>
+    <div class="brand-sub">ඉන්ධන සහායකයා</div>
+  </div>
+  <div class="theme-badge" id="themeBadge">
+    <span class="theme-ico" id="themeIco">☀️</span>
+    <span id="themeLabel">දවල්</span>
+  </div>
+</div>
+
+<!-- ── STEP 1: Vehicle Number ── -->
+<div class="card" id="stepInput">
+  <div class="card-header">
+    <div class="card-icon">🚗</div>
+    <div>
+      <div class="card-title">වාහන අංකය ඇතුළු කරන්න</div>
+      <div class="card-sub">ඔබේ Vehicle Registration Number</div>
+    </div>
+  </div>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" id="tab4" onclick="setMode(4)">අවසාන ඉලක්කම් 4</button>
+    <button class="mode-tab" id="tab1" onclick="setMode(1)">අවසාන ඉලක්කම 1</button>
+  </div>
+
+  <div class="num-input-wrap">
+    <span class="num-prefix" id="numPrefix">XXX –</span>
+    <input
+      type="number" id="numInput" class="num-input"
+      placeholder="0000" maxlength="4" inputmode="numeric"
+      oninput="onNumInput()" onkeydown="onKey(event)"
+    >
+  </div>
+
+  <button class="go-btn" id="goBtn" onclick="proceed()" disabled>
+    බලන්න →
+  </button>
+</div>
+
+<!-- ── STEP 2: Vehicle Info + Calendar ── -->
+<div class="card hidden" id="stepCal">
+  <div class="card-header">
+    <div class="card-icon" id="calCardIco">📅</div>
+    <div>
+      <div class="card-title">ඔබේ වාහන විශ්ලේෂණය</div>
+      <div class="card-sub" id="calCardSub">---</div>
+    </div>
+  </div>
+
+  <!-- Plate display -->
+  <div class="plate-display">
+    <div class="plate-fuel-ico">⛽</div>
+    <div class="plate-info">
+      <div class="plate-tag">Vehicle Number</div>
+      <div class="plate-number" id="plateNum">---</div>
+      <div class="plate-parity" id="plateParity">
+        <span class="parity-dot" id="parityDot"></span>
+        <span id="parityText"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Day result banner -->
+  <div class="day-banner" id="dayBanner">
+    <div class="banner-ico" id="bannerIco"></div>
+    <div class="banner-text">
+      <div class="banner-title" id="bannerTitle"></div>
+      <div class="banner-sub" id="bannerSub"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── STEP 2b: Calendar ── -->
+<div class="card hidden" id="stepCalGrid">
+  <div class="card-header">
+    <div class="card-icon">🗓️</div>
+    <div>
+      <div class="card-title" id="calMonthTitle"></div>
+      <div class="card-sub">කොළ දිනවල ඔබේ වාහනයට තෙල් ගත හැක</div>
+    </div>
+  </div>
+  <div class="cal-grid" id="calGrid"></div>
+  <div class="cal-legend">
+    <span><div class="leg-ok"></div>ඔබේ දිනය</span>
+    <span><div class="leg-td"></div>අද</span>
+  </div>
+</div>
+
+<!-- ── STEP 3: Vehicle Type ── -->
+<div class="card hidden" id="stepVtype">
+  <div class="card-header">
+    <div class="card-icon">🔧</div>
+    <div>
+      <div class="card-title">වාහන වර්ගය තෝරන්න</div>
+      <div class="card-sub">ඔබේ වාහන වර්ගය අනුව Quota තීරණය වේ</div>
+    </div>
+  </div>
+  <div class="vtype-grid" id="vtypeGrid"></div>
+</div>
+
+<!-- ── STEP 4: Quota + Calculator ── -->
+<div class="card hidden" id="stepQuota">
+  <div class="card-header">
+    <div class="card-icon">📊</div>
+    <div>
+      <div class="card-title">Quota &amp; Calculator</div>
+      <div class="card-sub" id="quotaCardSub">සතිපතා ඉන්ධන සීමාව</div>
+    </div>
+  </div>
+
+  <!-- Reset date — auto calculated -->
+  <div class="reset-row" id="resetDisplay">
+    <div class="reset-ico">🔄</div>
+    <div class="reset-body">
+      <div class="reset-lbl">ඊළඟ Quota Reset</div>
+      <div class="reset-val" id="resetVal">--</div>
+      <div class="reset-cd" id="resetCd"></div>
+    </div>
+  </div>
+
+  <!-- Quota hero -->
+  <div class="quota-hero">
+    <div class="qh-top">
+      <div class="qh-left">
+        <div class="qh-lbl">Weekly Quota</div>
+        <div class="qh-val"><span id="qWeekly">--</span><span class="qh-unit">L</span></div>
+      </div>
+      <div class="qh-right">
+        <div class="qh-lbl">Balance</div>
+        <div class="qh-bal green" id="qBal">--<span style="font-size:14px;color:var(--text3)"> L</span></div>
+        <div class="qh-pct" id="qPct"></div>
+      </div>
+    </div>
+    <div class="prog-track">
+      <div class="prog-fill green" id="progFill" style="width:100%"></div>
+    </div>
+    <div class="prog-labels">
+      <span>0 L</span>
+      <span id="progMax">-- L</span>
+    </div>
+  </div>
+
+  <!-- Fuel type label + tabs -->
+  <div class="dual-input-label" style="margin-bottom:8px">
+    ⛽ ඉන්ධන වර්ගය තෝරන්න
+    <span id="fuelTypeNote" style="margin-left:auto;font-size:10px;color:var(--text3);font-weight:500;font-family:'DM Sans','Noto Sans Sinhala',sans-serif"></span>
+  </div>
+  <div class="fuel-tabs" id="fuelTabs"></div>
+
+  <!-- Dual input -->
+  <div class="dual-input-label">
+    💬 ගැහූ ප්‍රමාණය ඇතුළු කරන්න
+  </div>
+  <div class="input-row">
+    <div class="inp-box" onclick="document.getElementById('inpL').focus()">
+      <div class="inp-box-lbl">ලීටර්</div>
+      <div class="inp-box-inner">
+        <input type="number" id="inpL" placeholder="0.00" min="0" step="0.1" oninput="calcFrom('L')">
+        <span class="inp-box-unit">L</span>
+      </div>
+    </div>
+    <div class="arrow-sep">⇄</div>
+    <div class="inp-box" onclick="document.getElementById('inpR').focus()">
+      <div class="inp-box-lbl">රුපියල්</div>
+      <div class="inp-box-inner">
+        <span class="inp-box-unit">Rs.</span>
+        <input type="number" id="inpR" placeholder="0" min="0" step="1" oninput="calcFrom('R')">
+      </div>
+    </div>
+  </div>
+  <div class="warn-text" id="warnText">⚠️ ඇතුළු කළ ප්‍රමාණය Balance ඉක්මවයි!</div>
+
+  <!-- Result -->
+  <div class="result-card" id="resultCard" style="display:none">
+    <div class="rc-left">
+      <div class="rc-lbl">ගෙවිය යුතු මුදල</div>
+      <div class="rc-val" id="rcVal">Rs. 0</div>
+      <div class="rc-break" id="rcBreak"></div>
+    </div>
+    <div class="rc-right">⛽</div>
+  </div>
+
+  <button class="reset-link" onclick="resetAll()">↩ නව වාහනයක් ඇතුළු කරන්න</button>
+</div>
+
+</div><!-- /wrap -->
+
+<script>
+/* ══════════════════════════════════════════
+   DATA
+══════════════════════════════════════════ */
+const VTYPES = [
+  { id:'bike',    ico:'🏍️', name:'Motorcycle',      quota:5,   fuels:['p92','p95'],                    defaultFuel:'p92'    },
+  { id:'tuk',     ico:'🛺',  name:'Three-Wheeler',   quota:15,  fuels:['p92','p95'],                    defaultFuel:'p92'    },
+  { id:'car',     ico:'🚗',  name:'Motor Car',       quota:15,  fuels:['p92','p95','diesel','sdiesel'], defaultFuel:'p92'    },
+  { id:'van',     ico:'🚐',  name:'Van / SUV',       quota:40,  fuels:['diesel','sdiesel','p92','p95'], defaultFuel:'diesel' },
+  { id:'bus',     ico:'🚌',  name:'Bus',             quota:60,  fuels:['diesel','sdiesel'],             defaultFuel:'diesel' },
+  { id:'lorry',   ico:'🚛',  name:'Lorry',           quota:200, fuels:['diesel','sdiesel'],             defaultFuel:'diesel' },
+  { id:'special', ico:'🚑',  name:'Special Vehicle', quota:40,  fuels:['p92','p95','diesel','sdiesel'], defaultFuel:'diesel' },
+  { id:'quad',    ico:'🚘',  name:'Quadricycle',     quota:5,   fuels:['p92','p95'],                    defaultFuel:'p92'    },
+];
+
+const FUELS = [
+  { id:'p92',    name:'92 Petrol',    price:299, type:'petrol' },
+  { id:'p95',    name:'95 Petrol',    price:361, type:'petrol' },
+  { id:'diesel', name:'Diesel',       price:283, type:'diesel' },
+  { id:'sdiesel',name:'Super Diesel', price:313, type:'diesel' },
+];
+
+let S = {
+  mode: 4,           // 4 or 1
+  input: '',
+  lastDigit: 0,
+  isEven: false,
+  vtype: null,
+  weekly: 0,
+  balance: 0,
+  fuelId: 'p92',
+};
+
+/* ══════════════════════════════════════════
+   THEME
+══════════════════════════════════════════ */
+function applyTheme() {
+  const h = new Date().getHours();
+  const isDay = h >= 7 && h < 18;
+  document.body.className = isDay ? 'light' : 'dark';
+  document.getElementById('themeIco').textContent   = isDay ? '☀️' : '🌙';
+  document.getElementById('themeLabel').textContent = isDay ? 'දවල්' : 'රාත්‍රී';
+}
+applyTheme();
+setInterval(applyTheme, 60000);
+
+/* ══════════════════════════════════════════
+   MODE TABS
+══════════════════════════════════════════ */
+function setMode(m) {
+  S.mode = m;
+  document.getElementById('tab4').className = 'mode-tab' + (m===4?' active':'');
+  document.getElementById('tab1').className = 'mode-tab' + (m===1?' active':'');
+  const inp = document.getElementById('numInput');
+  if (m === 4) {
+    inp.placeholder = '0000';
+    inp.maxLength   = 4;
+    document.getElementById('numPrefix').textContent = 'XXX –';
+  } else {
+    inp.placeholder = '0';
+    inp.maxLength   = 1;
+    document.getElementById('numPrefix').textContent = 'අවසාන –';
+  }
+  inp.value = '';
+  document.getElementById('goBtn').disabled = true;
+}
+
+/* ══════════════════════════════════════════
+   NUMBER INPUT
+══════════════════════════════════════════ */
+function onNumInput() {
+  const inp = document.getElementById('numInput');
+  const max = S.mode;
+  let v = inp.value.replace(/\D/g,'').slice(0, max);
+  inp.value = v;
+  S.input = v;
+  document.getElementById('goBtn').disabled = v.length < 1;
+}
+function onKey(e) { if (e.key==='Enter') proceed() }
+
+/* ══════════════════════════════════════════
+   PROCEED
+══════════════════════════════════════════ */
+function proceed() {
+  const v = S.input;
+  if (!v) return;
+
+  let dispNum, ld;
+  if (S.mode === 4) {
+    dispNum = v.length === 4 ? 'XXX–' + v : v;
+    ld = parseInt(v.slice(-1));
+  } else {
+    dispNum = 'XXX–XXX' + v;
+    ld = parseInt(v);
+  }
+
+  S.lastDigit = ld;
+  S.isEven    = ld % 2 === 0;
+
+  // Plate display
+  document.getElementById('plateNum').textContent = dispNum;
+
+  // Parity
+  const dot = document.getElementById('parityDot');
+  dot.style.background = S.isEven ? 'var(--accent)' : 'var(--orange)';
+  document.getElementById('parityText').textContent =
+    S.isEven ? 'ඉරට්ටේ අංකයකි' : 'ඔත්තේ අංකයකි';
+
+  // Day banner
+  buildDayBanner(S.isEven, ld);
+
+  // Calendar sub
+  document.getElementById('calCardSub').textContent =
+    `අවසාන ඉලක්කම ${ld} — ${S.isEven ? 'ඉරට්ටේ' : 'ඔත්තේ'} අංකය`;
+
+  // Build calendar
+  buildCalendar(S.isEven);
+  buildVtypes();
+
+  showEl('stepCal');
+  setTimeout(()=>showEl('stepCalGrid'), 100);
+  setTimeout(()=>showEl('stepVtype'),   200);
+  setTimeout(()=>document.getElementById('stepCal').scrollIntoView({behavior:'smooth',block:'start'}), 350);
+}
+
+/* ══════════════════════════════════════════
+   DAY BANNER
+══════════════════════════════════════════ */
+function buildDayBanner(isEven, ld) {
+  const today = new Date().getDate();
+  const todayIsEven = today % 2 === 0;
+  const can = isEven === todayIsEven;
+
+  const banner = document.getElementById('dayBanner');
+  banner.className = 'day-banner ' + (can ? 'can' : 'no');
+
+  document.getElementById('bannerIco').textContent   = can ? '✅' : '🚫';
+  document.getElementById('bannerTitle').textContent = can
+    ? 'අද තෙල් ගහන්න පුළුවන්'
+    : 'අද තෙල් ගහන්න බෑ';
+  document.getElementById('bannerSub').textContent = can
+    ? `${today} වෙනිදා ${todayIsEven?'ඉරට්ටේ':'ඔත්තේ'} දිනයකි — ඔබේ ${S.isEven?'ඉරට්ටේ':'ඔත්තේ'} අංකයට ගැළපේ ✓`
+    : `${today} වෙනිදා ${todayIsEven?'ඉරට්ටේ':'ඔත්තේ'} දිනයකි — ඔබේ ${S.isEven?'ඉරට්ටේ':'ඔත්තේ'} අංකයට නොගැළපේ`;
+}
+
+/* ══════════════════════════════════════════
+   CALENDAR
+══════════════════════════════════════════ */
+function buildCalendar(isEven) {
+  const now   = new Date();
+  const y = now.getFullYear(), mo = now.getMonth(), today = now.getDate();
+  const mNames = ['ජනවාරි','පෙබරවාරි','මාර්තු','අප්‍රේල්','මැයි','ජූනි','ජූලි',
+                  'අගෝස්තු','සැප්තැම්බර්','ඔක්තෝබර්','නොවැම්බර්','දෙසැම්බර්'];
+  document.getElementById('calMonthTitle').textContent = `${mNames[mo]} ${y}`;
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+  ['ඉ','ස','අ','බ','බ්‍ර','සි','සෙ'].forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-hd'; el.textContent = d; grid.appendChild(el);
+  });
+  const first = new Date(y,mo,1).getDay();
+  for (let i=0;i<first;i++) grid.appendChild(document.createElement('div'));
+  const days = new Date(y,mo+1,0).getDate();
+  for (let d=1; d<=days; d++) {
+    const div = document.createElement('div');
+    div.className = 'cal-d'; div.textContent = d;
+    if (isEven === (d%2===0)) div.classList.add('ok');
+    if (d === today)          div.classList.add('today');
+    grid.appendChild(div);
+  }
+}
+
+/* ══════════════════════════════════════════
+   VEHICLE TYPES
+══════════════════════════════════════════ */
+function buildVtypes() {
+  const grid = document.getElementById('vtypeGrid');
+  grid.innerHTML = '';
+  VTYPES.forEach(vt => {
+    const div = document.createElement('div');
+    div.className = 'vtype-btn';
+    div.innerHTML = `
+      <div class="vt-ico">${vt.ico}</div>
+      <div class="vt-name">${vt.name}</div>
+      <div class="vt-quota">${vt.quota} L / සතිය</div>`;
+    div.onclick = () => selectVtype(vt, div);
+    grid.appendChild(div);
+  });
+}
+
+function selectVtype(vt, el) {
+  document.querySelectorAll('.vtype-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  S.vtype   = vt;
+  S.weekly  = vt.quota;
+  S.balance = vt.quota;
+
+  // Build fuel tabs filtered for this vehicle type
+  buildFuelTabs(vt);
+
+  // Quota display
+  document.getElementById('qWeekly').textContent = vt.quota.toFixed(1);
+  document.getElementById('progMax').textContent  = vt.quota.toFixed(1) + ' L';
+  document.getElementById('quotaCardSub').textContent =
+    `${vt.ico} ${vt.name} — සතිපතා ${vt.quota} L`;
+  updateBalanceUI(vt.quota, vt.quota);
+
+  // Reset inputs
+  document.getElementById('inpL').value = '';
+  document.getElementById('inpR').value = '';
+  document.getElementById('resultCard').style.display = 'none';
+  document.getElementById('warnText').style.display   = 'none';
+
+  // Auto reset time
+  showAutoReset();
+
+  showEl('stepQuota');
+  setTimeout(()=>document.getElementById('stepQuota').scrollIntoView({behavior:'smooth',block:'start'}),200);
+}
+
+/* ══════════════════════════════════════════
+   FUEL TABS — filtered by vehicle type
+══════════════════════════════════════════ */
+function buildFuelTabs(vt) {
+  const wrap = document.getElementById('fuelTabs');
+  wrap.innerHTML = '';
+  S.fuelId = vt.defaultFuel;
+
+  // Show note about fuel types
+  const note = document.getElementById('fuelTypeNote');
+  if (note) {
+    const hasP = vt.fuels.some(f => f.startsWith('p'));
+    const hasD = vt.fuels.some(f => f === 'diesel' || f === 'sdiesel');
+    if (hasP && hasD) note.textContent = '🟡 Petrol & 🔵 Diesel';
+    else if (hasP)    note.textContent = '🟡 Petrol Only';
+    else              note.textContent = '🔵 Diesel Only';
+  }
+
+  const allowedFuels = FUELS.filter(f => vt.fuels.includes(f.id));
+  allowedFuels.forEach(f => {
+    const div = document.createElement('div');
+    const isDefault = f.id === vt.defaultFuel;
+    div.className = 'fuel-tab' + (isDefault ? ' active' : '');
+    div.innerHTML = `<span class="ftab-dot ${f.type}"></span>${f.name}<br><span class="ftab-price">Rs. ${f.price}/L</span>`;
+    div.onclick = () => {
+      document.querySelectorAll('.fuel-tab').forEach(t => t.classList.remove('active'));
+      div.classList.add('active');
+      S.fuelId = f.id;
+      if (document.getElementById('inpL').value) calcFrom('L');
+      else if (document.getElementById('inpR').value) calcFrom('R');
+    };
+    wrap.appendChild(div);
+  });
+}
+
+/* ══════════════════════════════════════════
+   CALCULATOR
+══════════════════════════════════════════ */
+function calcFrom(src) {
+  const fuel  = FUELS.find(f=>f.id===S.fuelId);
+  const price = fuel.price;
+  const lEl   = document.getElementById('inpL');
+  const rEl   = document.getElementById('inpR');
+  const warn  = document.getElementById('warnText');
+  const rc    = document.getElementById('resultCard');
+
+  let litres = 0, rupees = 0;
+
+  if (src === 'L') {
+    litres = Math.max(0, parseFloat(lEl.value) || 0);
+    rupees = litres * price;
+    rEl.value = litres > 0 ? Math.round(rupees) : '';
+  } else {
+    rupees = Math.max(0, parseFloat(rEl.value) || 0);
+    litres = rupees / price;
+    lEl.value = rupees > 0 ? litres.toFixed(2) : '';
+  }
+
+  if (litres <= 0) {
+    rc.style.display   = 'none';
+    warn.style.display = 'none';
+    S.balance = S.weekly;
+    updateBalanceUI(S.weekly, S.weekly);
+    return;
+  }
+
+  // Warn if exceeds balance
+  if (litres > S.weekly) {
+    warn.style.display = 'block';
+    litres = S.weekly;
+    rupees = litres * price;
+    lEl.value = litres.toFixed(2);
+    rEl.value = Math.round(rupees);
+  } else {
+    warn.style.display = 'none';
+  }
+
+  const newBal = Math.max(0, S.weekly - litres);
+  S.balance = newBal;
+  updateBalanceUI(newBal, S.weekly);
+
+  // Show result
+  rc.style.display = 'flex';
+  document.getElementById('rcVal').textContent   = 'Rs. ' + Math.round(rupees).toLocaleString('en');
+  document.getElementById('rcBreak').textContent =
+    `${litres.toFixed(2)} L × Rs. ${price} / L`;
+}
+
+/* ══════════════════════════════════════════
+   BALANCE UI
+══════════════════════════════════════════ */
+function updateBalanceUI(bal, weekly) {
+  const pct = weekly > 0 ? Math.max(0, Math.min(100, (bal/weekly)*100)) : 0;
+  const cls = pct > 50 ? 'green' : pct > 20 ? 'orange' : 'red';
+
+  const balEl = document.getElementById('qBal');
+  balEl.className = 'qh-bal ' + cls;
+  balEl.innerHTML = bal.toFixed(1) + '<span style="font-size:14px;color:var(--text3)"> L</span>';
+
+  document.getElementById('qPct').textContent = Math.round(pct) + '%';
+
+  const fill = document.getElementById('progFill');
+  fill.className = 'prog-fill ' + cls;
+  fill.style.width = pct + '%';
+}
+
+/* ══════════════════════════════════════════
+   AUTO RESET — FuelPass resets every Monday 00:00
+══════════════════════════════════════════ */
+function getNextMonday() {
+  const now = new Date();
+  const day = now.getDay(); // 0=Sun,1=Mon,...,6=Sat
+  // Days until next Monday (if today is Monday and time > 00:00, next Monday = 7 days)
+  const daysUntil = day === 1 ? 7 : (8 - day) % 7;
+  const next = new Date(now);
+  next.setDate(now.getDate() + daysUntil);
+  next.setHours(0, 0, 0, 0);
+  return next;
+}
+
+function showAutoReset() {
+  const d = getNextMonday();
+  const mNames = ['ජනවාරි','පෙබරවාරි','මාර්තු','අප්‍රේල්','මැයි','ජූනි','ජූලි',
+                  'අගෝස්තු','සැප්තැම්බර්','ඔක්තෝබර්','නොවැම්බර්','දෙසැම්බර්'];
+  const dayNames = ['ඉරිදා','සඳුදා','අඟහරුවාදා','බදාදා','බ්‍රහස්පතින්දා','සිකුරාදා','සෙනසුරාදා'];
+  document.getElementById('resetVal').textContent =
+    `${dayNames[d.getDay()]}, ${mNames[d.getMonth()]} ${d.getDate()} — රාත්‍රී 12:00`;
+  document.getElementById('resetCd').textContent = cdText(d);
+  clearInterval(window._cd);
+  window._cd = setInterval(() => {
+    document.getElementById('resetCd').textContent = cdText(getNextMonday());
+  }, 60000);
+}
+
+function cdText(d) {
+  const diff = d - new Date();
+  if (diff <= 0) return '🔄 Reset විය — quota refresh වී ඇත';
+  const dy = Math.floor(diff/86400000);
+  const h  = Math.floor((diff%86400000)/3600000);
+  const m  = Math.floor((diff%3600000)/60000);
+  if (dy>0) return `⏳ දින ${dy}ක් සහ පැය ${h}ක් ඉතිරිව ඇත`;
+  if (h>0)  return `⏳ පැය ${h}ක් සහ මිනිත්තු ${m}ක් ඉතිරිව ඇත`;
+  return `⏳ මිනිත්තු ${m}ක් ඉතිරිව ඇත`;
+}
+
+/* ══════════════════════════════════════════
+   RESET ALL
+══════════════════════════════════════════ */
+function resetAll() {
+  S = { mode:4, input:'', lastDigit:0, isEven:false, vtype:null, weekly:0, balance:0, fuelId:'p92' };
+  ['stepCal','stepCalGrid','stepVtype','stepQuota'].forEach(id=>{
+    const el = document.getElementById(id);
+    el.classList.add('hidden');
+    el.classList.remove('reveal');
+  });
+  document.getElementById('numInput').value = '';
+  document.getElementById('goBtn').disabled = true;
+  clearInterval(window._cd);
+  setMode(4);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ══════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════ */
+function showEl(id) {
+  const el = document.getElementById(id);
+  el.classList.remove('hidden');
+  el.classList.add('reveal');
+}
+</script>
+</body>
+                                             </html>
